@@ -1,4 +1,3 @@
-#include "Communication.h"
 #include "ADAS1000.h"
 #include <RFduinoBLE.h>
 
@@ -11,23 +10,19 @@ void setup() {
 
   // start the BLE stack
   RFduinoBLE.begin();
+  pinMode(6, OUTPUT);
 
   Serial.begin(9600);
+  unsigned char adas = ADAS1000_Init(ADAS1000_2KHZ_FRAME_RATE);
+  if(adas) Serial.println("Initial success !");
 }
 
 void loop() {
   // sample once per second
-  RFduino_ULPDelay( SECONDS(1) );
-  unsigned char adas = ADAS1000_Init(ADAS1000_2KHZ_FRAME_RATE);
-  Serial.println(adas);
-}
-
-void RFduinoBLE_onReceive(char *data, int len){
-  uint8_t m = 0;
-  for(int i=0;i<len;i++) {
-    uint8_t myByte = data[i];
-    if(m<myByte) m=myByte;
-  }
-  // echo the max value
-   RFduinoBLE.sendByte(m);
+  unsigned long r;
+  ADAS1000_GetRegisterValue(0x0A, &r);
+  Serial.println(r, HEX);
+  Serial.println("---");
+  delay(1000);
+  
 }

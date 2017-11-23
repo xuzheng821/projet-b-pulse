@@ -44,6 +44,7 @@
 /* Include Files                                                              */
 /******************************************************************************/
 #include "Communication.h"
+#include <SPI.h>
 
 /***************************************************************************//**
  * @brief Initializes the SPI communication peripheral.
@@ -70,8 +71,18 @@ unsigned char SPI_Init(unsigned char lsbFirst,
                        unsigned char clockPha)
 {
 	// Add your code here.
-
-    return 0;
+    SPI.begin();
+    
+    if (lsbFirst) {SPI.setBitOrder(LSBFIRST);}
+    else {SPI.setBitOrder(MSBFIRST);}
+    
+    SPI.setFrequency(clockFreq);
+    
+    SPI.setCPOL(clockPol);
+    SPI.setCPHA(clockPha);
+    
+    // pas moyen de detecter l'erreur
+    return 1;
 }
 
 /***************************************************************************//**
@@ -86,8 +97,11 @@ unsigned char SPI_Write(unsigned char* data,
 						unsigned char bytesNumber)
 {
 	// Add your code here.
-
-	return bytesNumber;
+    digitalWrite(6, LOW);
+    for (unsigned char i=0;i<bytesNumber;i++)
+        {SPI.transfer(data[i]);}
+    digitalWrite(6, HIGH);
+	  return bytesNumber;
 }
 
 /***************************************************************************//**
@@ -102,6 +116,9 @@ unsigned char SPI_Read(unsigned char* data,
 					   unsigned char bytesNumber)
 {
 	// Add your code here.
-
-	return bytesNumber;
+    digitalWrite(6, LOW);
+    for (unsigned char i=0;i<bytesNumber;i++)
+        {data[i] = SPI.transfer(0x00);}
+    digitalWrite(6, HIGH);
+	  return bytesNumber;
 }
