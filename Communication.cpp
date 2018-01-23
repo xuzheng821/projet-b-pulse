@@ -70,7 +70,6 @@ unsigned char SPI_Init(unsigned char lsbFirst,
                        unsigned char clockPol,
                        unsigned char clockPha)
 {
-	// Add your code here.
     SPI.begin();
     
     if (lsbFirst) {SPI.setBitOrder(LSBFIRST);}
@@ -96,7 +95,6 @@ unsigned char SPI_Init(unsigned char lsbFirst,
 unsigned char SPI_Write(unsigned char* data,
 						unsigned char bytesNumber)
 {
-	// Add your code here.
     digitalWrite(6, LOW);
     for (unsigned char i=0;i<bytesNumber;i++)
         {SPI.transfer(data[i]);}
@@ -115,7 +113,6 @@ unsigned char SPI_Write(unsigned char* data,
 unsigned char SPI_Read(unsigned char* data,
 					   unsigned char bytesNumber)
 {
-	// Add your code here.
     digitalWrite(6, LOW);
     for (unsigned char i=0;i<bytesNumber;i++)
         {data[i] = SPI.transfer(0x00);}
