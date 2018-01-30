@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <Wire.h>
+#include <RFduinoBLE.h>
 #include "MAX30100_PulseOximeter.h"
 
 #define REPORTING_PERIOD_MS     1000
@@ -39,7 +40,9 @@ void onBeatDetected()
 
 void setup()
 {
-    Serial.begin(115200);
+    Serial.begin(9600);
+    RFduinoBLE.advertisementData = "B-Pulse";
+    RFduinoBLE.begin();
 
     Serial.print("Initializing pulse oximeter..");
 
@@ -72,10 +75,13 @@ void loop()
     if (millis() - tsLastReport > REPORTING_PERIOD_MS) {
         Serial.print("Heart rate:");
         Serial.print(pox.getHeartRate());
+        RFduinoBLE.send(pox.getHeartRate());
         Serial.print("bpm / SpO2:");
         Serial.print(pox.getSpO2());
+        RFduinoBLE.send(pox.getSpO2());
         Serial.print("% / temp:");
         Serial.print(pox.getTemperature());
+        RFduinoBLE.sendFloat(pox.getTemperature());
         Serial.println("C");
 
         tsLastReport = millis();

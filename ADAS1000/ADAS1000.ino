@@ -1,7 +1,7 @@
 #include "ADAS1000.h"
 #include <RFduinoBLE.h>
 
-#define NUMBER_OF_FRAME 4800
+#define NUMBER_OF_FRAME 100
 unsigned char dataBuffer[NUMBER_OF_FRAME] = {0,};
 unsigned short  frame = 0;
 unsigned long crcValue = 0;
@@ -45,13 +45,12 @@ void loop() {
   Serial.println("ADAS1000_ECGCTL: ");
   Serial.println(regVal, HEX);
 
-  // read a frame of data from the ADAS1000
-  ADAS1000_ReadData(dataBuffer, 100,
+  // read some frames of data from the ADAS1000
+  ADAS1000_ReadData(dataBuffer, 2,
             1, 1,
             0, 0);
   // compute the CRC of the frame
   crcValue = ADAS1000_ComputeFrameCrc(dataBuffer);
-
 
   for(frame = 0; frame < NUMBER_OF_FRAME; frame++) {
     Serial.print(dataBuffer[frame], HEX);
@@ -62,3 +61,7 @@ void loop() {
   Serial.println("---");
   delay(10000000);
 }
+
+//void RFduinoBLE_onConnect(){
+//  RFduinoBLE.send(dataBuffer, NUMBER_OF_FRAME);
+//}
